@@ -1,18 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { RoutePath } from '../router/Routes'
-import { streamApi } from '../services/StreamService'
-import { IAccounts, accountExample } from '../models/Accounts'
 import {useAppDispatch, useAppSelector} from '../hooks/redux'
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import {Box, Button, Dialog, DialogTitle, Fab, Modal, Stack, Typography} from '@mui/material'
-import CreateIcon from '@mui/icons-material/Create';
+import {Button, Dialog, DialogTitle, Stack} from '@mui/material'
 import {MyModal} from "../components/MyModal"
 import { DynamicTable } from '../components/DynamicTable'
 import { StreamSelect } from '../components/StreamSelect'
@@ -39,13 +27,15 @@ export const AdminPage = () => {
     dispatch(getStreamByName({tid, currentStreamName}))
   }
 
-  useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      e.preventDefault();
-      e.returnValue = '';
-      setDialog(true)
-    };
-  }, []);
+  const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+   if(unsavedData){
+     e.preventDefault();
+     e.returnValue = '';
+     setDialog(true)
+   }
+  };
+
+  window.addEventListener('beforeunload', handleBeforeUnload);
 
   return (
     <>
@@ -62,7 +52,7 @@ export const AdminPage = () => {
         <Dialog open={dialog}>
           <DialogTitle>Есть несохранённые изменения</DialogTitle>
           <Stack>
-            <Button onClick={()=>{}} variant={"contained"}>Выйти</Button>
+            <Button onClick={()=>{window.electronAPI.sendClose()}} variant={"contained"}>Выйти</Button>
             <Button onClick={()=>setDialog(false)} variant={"outlined"}>Отмена</Button>
           </Stack>
         </Dialog>

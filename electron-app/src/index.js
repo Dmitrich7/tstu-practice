@@ -17,15 +17,15 @@ const createWindow = () => {
       webSecurity: false
     },
   });
-
   mainWindow.setMenuBarVisibility(false);
-
-  ipcMain.on('close',()=>app.quit())
-
   mainWindow.loadURL("http://localhost:3000")
 
 };
 
+ipcMain.on('close-app',()=> {
+  console.log("quit")
+  app.exit()
+})
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
